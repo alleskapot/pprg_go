@@ -2,6 +2,7 @@ package knapsack
 
 import (
 	"time"
+	"fmt"
 )
 
 type Item struct {
@@ -36,27 +37,38 @@ func SolveRecursive(items []Item, knapsackSize int) (Solution, time.Duration) {
 func SolveParallel(items []Item, knapsackSize int) (Solution, time.Duration) {
 	start := time.Now()
 
-	done := make(chan bool)
+	//done := make(chan bool)
 
 	// we only benefit from a parallel solution if we have a bigger list
-	ps := []SubsetSum{{nil, 0}}
+	//ps := []SubsetSum{{nil, 0}}
 	for _, i := range items {
+		itemSubsetSum := SubsetSum{[]Item{i}, i.Weight}
+		itemSubset := []SubsetSum{itemSubsetSum}
+		for _, otherItem := range items {
+			if(contains(itemSubsetSum.subset, otherItem) == false) {
+				subset := append([]Item {i}, otherItem)
+				sum := i.Weight + otherItem.Weight
+				if(sum <= knapsackSize) {
+					itemSubset = append(itemSubset, SubsetSum{subset, sum})
+				}
+			}
+		}
+		fmt.Println(itemSubset)
 		// calc the subset sums for every item of the list in a seperate thread
-		go func (i Item) {
-			pl := len(ps)
-			for j := 0; j < pl; j++ {
+		//go func (i Item) {
+			/*for j := 0; j < len(ps); j++ {
 				// we could also make this loop parallel
 				subset := append([]Item{i}, ps[j].subset...)
 				sum := i.Weight + ps[j].sum
 				ps = append(ps, SubsetSum{subset, sum})
-			}
-			done <- true
-		} (i);
+			}*/
+			//done <- true
+		//} (i);
 	}
 
-	for _ = range items {
+	/*for _ = range items {
 		<-done
-	}
+	}*/
 
 	elapsed := time.Since(start)
 
@@ -83,3 +95,11 @@ func m(items []Item, itemSize int, maxWeight int) ([]string, int, int) {
 	return i0, w0, v0
 }
 
+func contains(s []Item, e Item) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
