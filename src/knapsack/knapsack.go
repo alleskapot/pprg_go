@@ -2,7 +2,6 @@ package knapsack
 
 import (
 	"time"
-	"fmt"
 )
 
 type Item struct {
@@ -61,7 +60,7 @@ func SolveParallel(items []Item, knapsackSize int) (Solution, time.Duration) {
 
 	elapsed := time.Since(start)
 
-	fmt.Println("\nSubset-Sums: ",ps)
+	//fmt.Println("\nSubset-Sums: ",ps)
 
 	// now we need to find the "perfect" subset sum for our needs
 	// if we put the value in the SubSet struct we can just find the maximum Value and the highest possible Weight from ps
