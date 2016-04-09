@@ -45,7 +45,7 @@ func main() {
 	items := []Item {}
 	for i := 0; i < len(weight); i++ {
 		key := "item" + strconv.Itoa(i)
-		items = Extend(items, Item {key, weight[i], profit[i]})
+		items = append(items, Item {key, weight[i], profit[i]})
 	}
 	fmt.Println("Items: ", items)
 
@@ -99,19 +99,6 @@ func readWeightAndProfit(filename string) []int {
 	if err := scanner.Err(); err != nil { log.Fatal(err) }
 
 	return m
-}
-
-func Extend(slice []Item, element Item) []Item {
-	n := len(slice)
-	if n == cap(slice) {
-		// +1 because there can be a slice with cap 0
-		newSlice := make([]Item, len(slice), len(slice)+1)
-		copy(newSlice, slice)
-		slice = newSlice
-	}
-	slice = slice[0 : n+1]
-	slice[n] = element
-	return slice
 }
 
 func knapsack(items []Item, knapsackSize int) Solution {
