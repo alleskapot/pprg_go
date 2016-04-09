@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
-	"log"
-	"os"
-	"bufio"
+	"filereader"
 )
 
 type Item struct {
@@ -30,16 +28,16 @@ func main() {
 
 	// Read Knapsack Capacity from file
 	var capacity int
-	capacity = readCapacity("testdata/capacity")
+	capacity = filereader.ReadCapacity("testdata/capacity")
 	fmt.Printf("Capacity: %[1]d \n", capacity)
 
 	// Read Weight of each item from File
 	var weight []int
-	weight = readWeightAndProfit("testdata/weight")
+	weight = filereader.ReadWeightAndProfit("testdata/weight")
 
 	// Read Profit of each item from File
 	var profit []int
-	profit = readWeightAndProfit("testdata/profit")
+	profit = filereader.ReadWeightAndProfit("testdata/profit")
 
 	// Create a map with key and values
 	items := []Item {}
@@ -53,53 +51,6 @@ func main() {
 
 }
 
-
-//TODO:  Müssten noch in ein anderes Files ausgelagert werden
-func readCapacity(filename string) int {
-
-	var capacity string
-	file, err := os.Open(filename)
-
-	if err != nil { log.Fatal(err) }
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		capacity = scanner.Text()
-	}
-
-	if err := scanner.Err(); err != nil { log.Fatal(err) }
-
-	// Convert back to int
-	capacityInt, err := strconv.Atoi(capacity)
-
-	return capacityInt
-}
-
-
-func readWeightAndProfit(filename string) []int {
-
-	var m []int
-
-	fileWeight, err := os.Open(filename)
-
-	if err != nil { log.Fatal(err) }
-	defer fileWeight.Close()
-
-	scanner := bufio.NewScanner(fileWeight)
-	for scanner.Scan() {
-
-		// Convert to int
-		was, err := strconv.Atoi(scanner.Text())
-		if err != nil { log.Fatal(err) }
-
-		m = append(m, was)
-	}
-
-	if err := scanner.Err(); err != nil { log.Fatal(err) }
-
-	return m
-}
 
 func knapsack(items []Item, knapsackSize int) Solution {
 	return Solution {nil, 0, 0};
