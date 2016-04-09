@@ -8,10 +8,16 @@ import (
 	"bufio"
 )
 
-var m map[string]Vertex
+type Item struct {
+	name   string
+	weight int
+	value  int
+}
 
-type Vertex struct {
-	Weight, Profit int
+type Solution struct {
+	items       *[]Item // we just need the reference to save memory
+	totalValue  int
+	totalWeight int
 }
 
 func main() {
@@ -35,18 +41,16 @@ func main() {
 	var profit []int
 	profit = readWeightAndProfit("testdata/profit")
 
-
 	// Create a map with key and values
-	// item1 = Weight, Profit
-	// item2 = Weight, Profit
-	// ...
-	m = make(map[string]Vertex)
+	items := []Item {}
 	for i := 0; i < len(weight); i++ {
-
 		key := "item" + strconv.Itoa(i)
-		m[key] = Vertex{weight[i], profit[i] }
-		fmt.Printf("Weight: %02[1]d - Profit: %02[2]d \n", m[key].Weight, m[key].Profit)
+		items = Extend(items, Item {key, weight[i], profit[i]})
 	}
+	fmt.Println("Items: ", items)
+
+	knapsack(items, capacity)
+
 }
 
 
@@ -97,3 +101,19 @@ func readWeightAndProfit(filename string) []int {
 	return m
 }
 
+func Extend(slice []Item, element Item) []Item {
+	n := len(slice)
+	if n == cap(slice) {
+		// +1 because there can be a slice with cap 0
+		newSlice := make([]Item, len(slice), len(slice)+1)
+		copy(newSlice, slice)
+		slice = newSlice
+	}
+	slice = slice[0 : n+1]
+	slice[n] = element
+	return slice
+}
+
+func knapsack(items []Item, knapsackSize int) Solution {
+	return Solution {nil, 0, 0};
+}
