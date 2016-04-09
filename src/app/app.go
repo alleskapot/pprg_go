@@ -51,6 +51,16 @@ func main() {
 	fmt.Printf("Time elapsed: %s\n", elapsed)
 	fmt.Printf("###########################################################################\n")
 
+	sParallel, elapsedParallel := knapsack.SolveParallel(items, capacity)
+
+	fmt.Printf("\n")
+	fmt.Printf("Using SolveParallel\n")
+	fmt.Printf("################################# RESULT ##################################\n")
+	fmt.Println("Take the following items: ",sParallel.Items)
+	fmt.Println("weight:", sParallel.TotalWeight)
+	fmt.Println("value:", sParallel.TotalValue)
+	fmt.Printf("Time elapsed: %s\n", elapsedParallel)
+	fmt.Printf("###########################################################################\n")
 }
 
 
