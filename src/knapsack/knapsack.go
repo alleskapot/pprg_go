@@ -1,9 +1,6 @@
 package knapsack
 
-import (
-	"fmt"
-	"time"
-)
+import "time"
 
 type Item struct {
 	Name   string
@@ -12,26 +9,17 @@ type Item struct {
 }
 
 type Solution struct {
-	Items       *[]Item // we just need the reference to save memory
+	Items       []string
 	TotalValue  int
 	TotalWeight int
 }
 
-func SolveRecursive(items []Item, knapsackSize int) Solution {
+func SolveRecursive(items []Item, knapsackSize int) (Solution, time.Duration) {
 	start := time.Now()
 	result, w, v := m(items, len(items)-1, knapsackSize)
 	elapsed := time.Since(start)
 
-	fmt.Printf("\n")
-	fmt.Printf("Using SolveRecursive\n")
-	fmt.Printf("################################# RESULT ##################################\n")
-	fmt.Println("Take the following items: ",result)
-	fmt.Println("weight:", w)
-	fmt.Println("value:", v)
-	fmt.Printf("Time elapsed: %s\n", elapsed)
-	fmt.Printf("###########################################################################\n")
-
-	return Solution {nil, 0, 0};
+	return Solution {result, v, w}, elapsed;
 }
 
 func generate(items []Item) {

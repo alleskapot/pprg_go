@@ -40,7 +40,16 @@ func main() {
 	fmt.Printf("Capacity: %[1]d \n", capacity)
 	fmt.Println("Items: ", items)
 
-	knapsack.SolveRecursive(items, capacity)
+	s, elapsed := knapsack.SolveRecursive(items, capacity)
+
+	fmt.Printf("\n")
+	fmt.Printf("Using SolveRecursive\n")
+	fmt.Printf("################################# RESULT ##################################\n")
+	fmt.Println("Take the following items: ",s.Items)
+	fmt.Println("weight:", s.TotalWeight)
+	fmt.Println("value:", s.TotalValue)
+	fmt.Printf("Time elapsed: %s\n", elapsed)
+	fmt.Printf("###########################################################################\n")
 
 }
 
