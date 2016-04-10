@@ -8,8 +8,6 @@ import (
 	"time"
 )
 
-
-
 func main() {
 
 	fmt.Println()
@@ -42,39 +40,48 @@ func main() {
 	fmt.Println("Items: ", items)
 
 
-	// RECURSIVE
-	startRecursive := time.Now()
-	s := knapsack.SolveRecursive(items, capacity)
-	elapsedRecursive := time.Since(startRecursive)
+	SolveItParallel(items, capacity)
+	SolveItRecursive(items, capacity)
 
-	fmt.Printf("Using SolveRecursive\n")
-	fmt.Printf("################################# RESULT ##################################\n")
-	fmt.Println("Take the following items: ",s.Items)
-	fmt.Println("weight:", s.TotalWeight)
-	fmt.Println("value:", s.TotalValue)
-	fmt.Printf("Time elapsed: %s\n", elapsedRecursive)
-	fmt.Printf("###########################################################################\n")
-
-
-
-	// PARALLEL
-	startParallel := time.Now()
-	resultDynamic := knapsack.KnapsackParallel(items, capacity)
-	ra, rb := knapsack.ShowOptimalSolution(items, resultDynamic, capacity)
-	elapsedParallel := time.Since(startParallel)
-
-	fmt.Printf("\n")
-	fmt.Printf("Using SolveParallel\n")
-	fmt.Printf("################################# RESULT ##################################\n")
-	fmt.Println("Take the following items: ", rb)
-	fmt.Println("weight:", ra)
-	fmt.Println("value:", resultDynamic[len(items)-1][capacity])
-	fmt.Printf("Time elapsed: %s\n", elapsedParallel)
-	fmt.Printf("###########################################################################\n")
 
 
 
 }
 
+func SolveItRecursive(items []knapsack.Item, capacity int) {
 
+	startRecursive := time.Now()
+	s := knapsack.SolveRecursive(items, capacity)
+	elapsedRecursive := time.Since(startRecursive)
+
+	fmt.Println()
+	fmt.Printf("Using SolveRecursive\n")
+	fmt.Printf("################################# RESULT ##################################\n")
+	fmt.Println("Take the following items: ", s.Items)
+	fmt.Println("weight:", s.TotalWeight)
+	fmt.Println("value:", s.TotalValue)
+	fmt.Printf("Time elapsed: %s\n", elapsedRecursive)
+	fmt.Printf("###########################################################################\n")
+}
+
+func SolveItParallel (items []knapsack.Item, capacity int) {
+
+	startParallel := time.Now()
+	resultDynamic := knapsack.KnapsackParallel(items, capacity)
+	finalValue, finalWeight, finalItems := knapsack.ShowOptimalSolution(items, resultDynamic, capacity)
+	elapsedParallel := time.Since(startParallel)
+
+	fmt.Printf("\n")
+	fmt.Printf("Using SolveParallel\n")
+	fmt.Printf("################################# RESULT ##################################\n")
+	fmt.Print("Take the following items: [")
+	for i := (len(finalItems) - 1); i >= 0 ; i-- {
+		fmt.Printf("item%d ", finalItems[i])
+	}
+	fmt.Println("]");
+	fmt.Println("weight:", finalWeight)
+	fmt.Println("value:", finalValue)
+	fmt.Printf("Time elapsed: %s\n", elapsedParallel)
+	fmt.Printf("###########################################################################\n")
+}
 
