@@ -1,0 +1,1 @@
+P05 is a set of 8 weights and profits for a knapsack of capacity 104.

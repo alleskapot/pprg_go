@@ -1,0 +1,1 @@
+P08 is a set of 24 weights and profits for a knapsack of capacity 6404180, from Kreher and Stinson, with an optimal profit of 13549094.

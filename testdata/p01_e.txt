@@ -1,0 +1,1 @@
+P01 is a set of 10 weights and profits for a knapsack of capacity 165.

@@ -6,28 +6,29 @@ import (
 	"filereader"
 	"knapsack"
 	"time"
+	"io/ioutil"
 )
 
 func main() {
 
-	fmt.Println()
+	var dataSet = "p07";
+
 	fmt.Println("---------------------------------------------------------------------------")
 	fmt.Printf("Wir arbeiten mit Google Go Go - https://www.youtube.com/watch?v=pIgZ7gMze7A \n")
 	fmt.Printf("Beispiel: Knapsack Problem (https://en.wikipedia.org/wiki/Knapsack_problem) \n")
 	fmt.Println("---------------------------------------------------------------------------")
 
-
 	// Read Knapsack Capacity from file
 	var capacity int
-	capacity = filereader.ReadCapacity("testdata/capacity")
+	capacity = filereader.ReadCapacity(fmt.Sprint("testdata/", dataSet,"_c.txt"));
 
 	// Read Weight of each item from File
 	var weight []int
-	weight = filereader.ReadWeightAndProfit("testdata/weight")
+	weight = filereader.ReadWeightAndProfit(fmt.Sprint("testdata/", dataSet,"_w.txt"))
 
 	// Read Profit of each item from File
 	var profit []int
-	profit = filereader.ReadWeightAndProfit("testdata/profit")
+	profit = filereader.ReadWeightAndProfit(fmt.Sprint("testdata/", dataSet,"_p.txt"))
 
 	// Create a map with key and values
 	items := []knapsack.Item {}
@@ -43,9 +44,8 @@ func main() {
 	SolveItParallel(items, capacity)
 	SolveItRecursive(items, capacity)
 
-
-
-
+	dat, _ := ioutil.ReadFile(fmt.Sprint("testdata/", dataSet, "_e.txt"));
+	fmt.Printf("Expectation: %s", (string(dat)))
 }
 
 func SolveItRecursive(items []knapsack.Item, capacity int) {

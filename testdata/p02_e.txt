@@ -1,0 +1,1 @@
+P02 is a set of 5 weights and profits for a knapsack of capacity 26.
