@@ -35,12 +35,16 @@ func SolveRecursive(items []Item, knapsackSize int) (Solution, time.Duration) {
 }
 
 func SolveParallel(items []Item, knapsackSize int) (Solution, time.Duration) {
+	// http://stackoverflow.com/questions/22373663/1-0-knapsack-how-to-make-it-parallel-with-priority-queue
+	// http://www.bogotobogo.com/Algorithms/knapsack.php
+	// https://github.com/mauromoura/0-1-knapsack-problem/blob/master/knapsack.go
+
 	start := time.Now()
 
 	//done := make(chan bool)
 
 	// we only benefit from a parallel solution if we have a bigger list
-	//ps := []SubsetSum{{nil, 0}}
+	ps := []SubsetSum{{nil, 0}}
 	for _, i := range items {
 		itemSubsetSum := SubsetSum{[]Item{i}, i.Weight}
 		itemSubset := []SubsetSum{itemSubsetSum}
@@ -54,16 +58,6 @@ func SolveParallel(items []Item, knapsackSize int) (Solution, time.Duration) {
 			}
 		}
 		fmt.Println(itemSubset)
-		// calc the subset sums for every item of the list in a seperate thread
-		//go func (i Item) {
-			/*for j := 0; j < len(ps); j++ {
-				// we could also make this loop parallel
-				subset := append([]Item{i}, ps[j].subset...)
-				sum := i.Weight + ps[j].sum
-				ps = append(ps, SubsetSum{subset, sum})
-			}*/
-			//done <- true
-		//} (i);
 	}
 
 	/*for _ = range items {
@@ -72,7 +66,7 @@ func SolveParallel(items []Item, knapsackSize int) (Solution, time.Duration) {
 
 	elapsed := time.Since(start)
 
-	//fmt.Println("\nSubset-Sums: ",ps)
+	fmt.Println("\nSubset-Sums: ",ps)
 
 	// now we need to find the "perfect" subset sum for our needs
 	// if we put the value in the SubSet struct we can just find the maximum Value and the highest possible Weight from ps
