@@ -58,6 +58,7 @@ func KnapsackParallel(items []Item, knapsackSize int) [][]int {
 	for i := 0; i <= n; i++ {
 		m[i] = make([]int, W+1)
 	}
+
 	for i := 0; i <= W; i++ {
 		m[0][i] = 0
 	}
@@ -91,10 +92,12 @@ func KnapsackParallel(items []Item, knapsackSize int) [][]int {
 }
 
 
-func ShowOptimalSolution(items []Item, m [][]int, knapsackSize int) (int, []int) {
+func ShowOptimalSolution(items []Item, m [][]int, knapsackSize int) (int, int, []int) {
 
 	finalValue := 0
+	finalWeight := 0
 	result := []int{}
+
 	W := knapsackSize
 	n := len(items)-1
 
@@ -103,10 +106,11 @@ func ShowOptimalSolution(items []Item, m [][]int, knapsackSize int) (int, []int)
 			result = append(result, n)
 			W = W - items[n].Weight
 			finalValue += items[n].Value
+			finalWeight += items[n].Weight
 			n--
 		} else {
 			n--
 		}
 	}
-	return finalValue, result
+	return finalValue, finalWeight, result
 }
