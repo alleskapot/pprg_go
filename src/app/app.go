@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"filereader"
 	"knapsack"
+	"time"
 )
 
 
@@ -40,27 +41,39 @@ func main() {
 	fmt.Printf("Capacity: %[1]d \n", capacity)
 	fmt.Println("Items: ", items)
 
-	s, elapsed := knapsack.SolveRecursive(items, capacity)
 
-	fmt.Printf("\n")
+	// RECURSIVE
+	startRecursive := time.Now()
+	s := knapsack.SolveRecursive(items, capacity)
+	elapsedRecursive := time.Since(startRecursive)
+
 	fmt.Printf("Using SolveRecursive\n")
 	fmt.Printf("################################# RESULT ##################################\n")
 	fmt.Println("Take the following items: ",s.Items)
 	fmt.Println("weight:", s.TotalWeight)
 	fmt.Println("value:", s.TotalValue)
-	fmt.Printf("Time elapsed: %s\n", elapsed)
+	fmt.Printf("Time elapsed: %s\n", elapsedRecursive)
 	fmt.Printf("###########################################################################\n")
 
-	sParallel, elapsedParallel := knapsack.SolveParallel(items, capacity)
+
+
+	// PARALLEL
+	startParallel := time.Now()
+	resultDynamic := knapsack.KnapsackParallel(items, capacity)
+	ra, rb := knapsack.ShowOptimalSolution(items, resultDynamic, capacity)
+	elapsedParallel := time.Since(startParallel)
 
 	fmt.Printf("\n")
 	fmt.Printf("Using SolveParallel\n")
 	fmt.Printf("################################# RESULT ##################################\n")
-	fmt.Println("Take the following items: ",sParallel.Items)
-	fmt.Println("weight:", sParallel.TotalWeight)
-	fmt.Println("value:", sParallel.TotalValue)
+	fmt.Println("Take the following items: ", rb)
+	fmt.Println("weight:", ra)
+	fmt.Println("value:", resultDynamic[len(items)-1][capacity])
 	fmt.Printf("Time elapsed: %s\n", elapsedParallel)
 	fmt.Printf("###########################################################################\n")
+
+
+
 }
 
 

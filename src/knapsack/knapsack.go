@@ -1,8 +1,6 @@
 package knapsack
 
 import (
-	"time"
-	"fmt"
 )
 
 type Item struct {
@@ -26,53 +24,12 @@ type SubsetSum struct {
 type empty struct {}
 type semaphore chan empty
 
-func SolveRecursive(items []Item, knapsackSize int) (Solution, time.Duration) {
-	start := time.Now()
+func SolveRecursive(items []Item, knapsackSize int) Solution {
 	result, w, v := m(items, len(items)-1, knapsackSize)
-	elapsed := time.Since(start)
 
-	return Solution {result, v, w}, elapsed
+	return Solution {result, v, w}
 }
 
-func SolveParallel(items []Item, knapsackSize int) (Solution, time.Duration) {
-	// http://stackoverflow.com/questions/22373663/1-0-knapsack-how-to-make-it-parallel-with-priority-queue
-	// http://www.bogotobogo.com/Algorithms/knapsack.php
-	// https://github.com/mauromoura/0-1-knapsack-problem/blob/master/knapsack.go
-
-	start := time.Now()
-
-	//done := make(chan bool)
-
-	// we only benefit from a parallel solution if we have a bigger list
-	ps := []SubsetSum{{nil, 0}}
-	for _, i := range items {
-		itemSubsetSum := SubsetSum{[]Item{i}, i.Weight}
-		itemSubset := []SubsetSum{itemSubsetSum}
-		for _, otherItem := range items {
-			if(contains(itemSubsetSum.subset, otherItem) == false) {
-				subset := append([]Item {i}, otherItem)
-				sum := i.Weight + otherItem.Weight
-				if(sum <= knapsackSize) {
-					itemSubset = append(itemSubset, SubsetSum{subset, sum})
-				}
-			}
-		}
-		fmt.Println(itemSubset)
-	}
-
-	/*for _ = range items {
-		<-done
-	}*/
-
-	elapsed := time.Since(start)
-
-	fmt.Println("\nSubset-Sums: ",ps)
-
-	// now we need to find the "perfect" subset sum for our needs
-	// if we put the value in the SubSet struct we can just find the maximum Value and the highest possible Weight from ps
-
-	return Solution {nil, 0, 0}, elapsed
-}
 
 func m(items []Item, itemSize int, maxWeight int) ([]string, int, int) {
 	if itemSize < 0 || maxWeight == 0 {
@@ -89,11 +46,67 @@ func m(items []Item, itemSize int, maxWeight int) ([]string, int, int) {
 	return i0, w0, v0
 }
 
-func contains(s []Item, e Item) bool {
-	for _, a := range s {
-		if a == e {
-			return true
+
+
+func KnapsackParallel(items []Item, knapsackSize int) [][]int {
+
+	n := len(items)-1
+	W := knapsackSize
+
+	m := make([][]int, n+1)
+
+	for i := 0; i <= n; i++ {
+		m[i] = make([]int, W+1)
+	}
+	for i := 0; i <= W; i++ {
+		m[0][i] = 0
+	}
+
+	done := make(chan bool)
+
+	go func() {
+
+		for i := 1; i <= n; i++ {
+
+			for j := 0; j <= W; j++ {
+
+				if items[i].Weight > j {
+					m[i][j] = m[i - 1][j]
+				} else if m[i - 1][j] > m[i - 1][j - items[i].Weight] + items[i].Value {
+					m[i][j] = m[i - 1][j]
+				} else {
+					m[i][j] = m[i - 1][j - items[i].Weight] + items[i].Value
+				}
+
+			}
+			done <- true
+		}
+	} ();
+
+	for x := 1; x <= n; x++ {
+		<- done
+	}
+
+	return m
+}
+
+
+func ShowOptimalSolution(items []Item, m [][]int, knapsackSize int) (int, []int) {
+
+	finalValue := 0
+	result := []int{}
+	W := knapsackSize
+	n := len(items)-1
+
+	for W > 0 && n > 0 {
+		if m[n][W] != m[n-1][W] {
+			result = append(result, n)
+			W = W - items[n].Weight
+			finalValue += items[n].Value
+			n--
+		} else {
+			n--
 		}
 	}
-	return false
+	return finalValue, result
 }
