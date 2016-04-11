@@ -11,13 +11,13 @@ import (
 
 func main() {
 
-	var dataSet = "p07";
+	var dataSet = "p09";
 
 	fmt.Println("---------------------------------------------------------------------------")
 	fmt.Printf("Wir arbeiten mit Google Go Go - https://www.youtube.com/watch?v=pIgZ7gMze7A \n")
 	fmt.Printf("Beispiel: Knapsack Problem (https://en.wikipedia.org/wiki/Knapsack_problem) \n")
 	fmt.Println("---------------------------------------------------------------------------")
-
+2
 	// Read Knapsack Capacity from file
 	var capacity int
 	capacity = filereader.ReadCapacity(fmt.Sprint("testdata/", dataSet,"_c.txt"));

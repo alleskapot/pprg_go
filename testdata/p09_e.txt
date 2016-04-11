@@ -1,0 +1,1 @@
+P07 is a set of 29 weights and profits for a knapsack of capacity 750, from Kreher and Stinson, with an optimal profit of 1458.
