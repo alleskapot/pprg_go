@@ -15,10 +15,10 @@ type Solution struct {
 	TotalWeight int
 }
 
-type SubsetSum struct {
-	subset []Item
-	sum    int
-}
+//type SubsetSum struct {
+//	subset []Item
+//	sum    int
+//}
 
 // needed to enable parallel execution
 type empty struct {}
@@ -113,4 +113,27 @@ func ShowOptimalSolution(items []Item, m [][]int, knapsackSize int) (int, int, [
 		}
 	}
 	return finalValue, finalWeight, result
+}
+
+
+
+
+//func knapsackRecursive(weights []int, values []int, n int, W int) int {
+func KnapsackRecursive(items []Item, n int, W int) int {
+
+	//n := len(items)-1
+	//W := knapsackSize
+
+	if n == 0 || W == 0 {
+		return 0
+	}
+	without := KnapsackRecursive(items, n - 1, W)
+	if items[n].Weight > W {
+		return without
+	}
+	withim := items[n].Value + KnapsackRecursive(items, n-1, W-items[n].Weight)
+	if withim > without {
+		return withim
+	}
+	return without
 }

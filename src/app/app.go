@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	var dataSet = "p07";
+	var dataSet = "p02";
 
 	fmt.Println("---------------------------------------------------------------------------")
 	fmt.Printf("Wir arbeiten mit Google Go Go - https://www.youtube.com/watch?v=pIgZ7gMze7A \n")
@@ -43,6 +43,10 @@ func main() {
 
 	SolveItParallel(items, capacity)
 	SolveItRecursive(items, capacity)
+
+	//resultRecursive := knapsack.KnapsackRecursive(weights, values, len(weights)-1, W)
+	resultRecursive := knapsack.KnapsackRecursive(items, len(items)-1, capacity)
+	fmt.Println("recursive optimal value -> ", resultRecursive)
 
 	dat, _ := ioutil.ReadFile(fmt.Sprint("testdata/", dataSet, "_e.txt"));
 	fmt.Printf("Expectation: %s", (string(dat)))
