@@ -34,6 +34,7 @@ func ReadCapacity(filename string) int {
 func ReadWeightAndProfit(filename string) []int {
 
 	var m []int
+	m = append(m, 0)
 
 	fileWeight, err := os.Open(filename)
 
