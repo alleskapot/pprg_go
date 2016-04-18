@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	var dataSet = "p02";
+	var dataSet = "p01";
 
 	fmt.Println("---------------------------------------------------------------------------")
 	fmt.Printf("Wir arbeiten mit Google Go Go - https://www.youtube.com/watch?v=pIgZ7gMze7A \n")
@@ -41,12 +41,9 @@ func main() {
 	fmt.Println("Items: ", items)
 
 
-	SolveItParallel(items, capacity)
 	SolveItRecursive(items, capacity)
-
-	//resultRecursive := knapsack.KnapsackRecursive(weights, values, len(weights)-1, W)
-	resultRecursive := knapsack.KnapsackRecursive(items, len(items)-1, capacity)
-	fmt.Println("recursive optimal value -> ", resultRecursive)
+	SolveItDynamicSequential(items, capacity)
+	SolveItDynamicParallel(items, capacity)
 
 	dat, _ := ioutil.ReadFile(fmt.Sprint("testdata/", dataSet, "_e.txt"));
 	fmt.Printf("Expectation: %s", (string(dat)))
@@ -54,38 +51,58 @@ func main() {
 
 func SolveItRecursive(items []knapsack.Item, capacity int) {
 
-	startRecursive := time.Now()
-	s := knapsack.SolveRecursive(items, capacity)
-	elapsedRecursive := time.Since(startRecursive)
+	startTime := time.Now()
+	item, weight, value := knapsack.SolveRecursive(items, len(items)-1, capacity)
+	elapsedTime := time.Since(startTime)
 
 	fmt.Println()
 	fmt.Printf("Using SolveRecursive\n")
 	fmt.Printf("################################# RESULT ##################################\n")
-	fmt.Println("Take the following items: ", s.Items)
-	fmt.Println("weight:", s.TotalWeight)
-	fmt.Println("value:", s.TotalValue)
-	fmt.Printf("Time elapsed: %s\n", elapsedRecursive)
+	fmt.Println("Take the following items: ", item)
+	fmt.Println("Weight:", weight)
+	fmt.Println("Value:", value)
+	fmt.Printf("Time elapsed: %s\n", elapsedTime)
 	fmt.Printf("###########################################################################\n")
 }
 
-func SolveItParallel (items []knapsack.Item, capacity int) {
+func SolveItDynamicParallel(items []knapsack.Item, capacity int) {
 
-	startParallel := time.Now()
-	resultDynamic := knapsack.KnapsackParallel(items, capacity)
-	finalValue, finalWeight, finalItems := knapsack.ShowOptimalSolution(items, resultDynamic, capacity)
-	elapsedParallel := time.Since(startParallel)
+	startTime := time.Now()
+	result := knapsack.KnapsackParallel(items, capacity)
+	itemNumber, value, weight := knapsack.ShowOptimalComposition(items, result, capacity)
+	elapsedTime := time.Since(startTime)
 
 	fmt.Printf("\n")
 	fmt.Printf("Using SolveParallel\n")
 	fmt.Printf("################################# RESULT ##################################\n")
 	fmt.Print("Take the following items: [")
-	for i := (len(finalItems) - 1); i >= 0 ; i-- {
-		fmt.Printf("item%d ", finalItems[i])
+	for i := (len(itemNumber) - 1); i >= 0 ; i-- {
+		fmt.Printf("item%d ", itemNumber[i])
 	}
 	fmt.Println("]");
-	fmt.Println("weight:", finalWeight)
-	fmt.Println("value:", finalValue)
-	fmt.Printf("Time elapsed: %s\n", elapsedParallel)
+	fmt.Println("Weight:", weight)
+	fmt.Println("Value:", value)
+	fmt.Printf("Time elapsed: %s\n", elapsedTime)
 	fmt.Printf("###########################################################################\n")
 }
 
+func SolveItDynamicSequential(items []knapsack.Item, capacity int) {
+
+	startTime := time.Now()
+	result := knapsack.KnapsackDynamic(items, capacity)
+	itemNumber, value, weight := knapsack.ShowOptimalComposition(items, result, capacity)
+	elapsedTime := time.Since(startTime)
+
+	fmt.Printf("\n")
+	fmt.Printf("Using SolveDynamic\n")
+	fmt.Printf("################################# RESULT ##################################\n")
+	fmt.Print("Take the following items: [")
+	for i := (len(itemNumber) - 1); i >= 0 ; i-- {
+		fmt.Printf("item%d ", itemNumber[i])
+	}
+	fmt.Println("]");
+	fmt.Println("Weight:", weight)
+	fmt.Println("Value:", value)
+	fmt.Printf("Time elapsed: %s\n", elapsedTime)
+	fmt.Printf("###########################################################################\n")
+}

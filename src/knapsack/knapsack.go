@@ -1,76 +1,50 @@
 package knapsack
 
-import (
-)
-
 type Item struct {
 	Name   string
 	Weight int
 	Value  int
 }
 
-type Solution struct {
-	Items       []string
-	TotalValue  int
-	TotalWeight int
-}
+func SolveRecursive(items []Item, itemSize int, knapsackSize int) ([] string, int, int) {
 
-//type SubsetSum struct {
-//	subset []Item
-//	sum    int
-//}
+	k := knapsackSize
 
-// needed to enable parallel execution
-type empty struct {}
-type semaphore chan empty
-
-func SolveRecursive(items []Item, knapsackSize int) Solution {
-	result, w, v := m(items, len(items)-1, knapsackSize)
-
-	return Solution {result, v, w}
-}
-
-
-func m(items []Item, itemSize int, maxWeight int) ([]string, int, int) {
-	if itemSize < 0 || maxWeight == 0 {
+	if itemSize < 0 || k == 0 {
 		return nil, 0, 0
-	} else if items[itemSize].Weight > maxWeight {
-		return m(items,itemSize-1, maxWeight)
+	} else if items[itemSize].Weight > k {
+		return SolveRecursive(items, itemSize - 1, k)
 	}
-	i0, w0, v0 := m(items,itemSize-1, maxWeight)
-	i1, w1, v1 := m(items, itemSize-1, maxWeight-items[itemSize].Weight)
-	v1 += items[itemSize].Value
-	if v1 > v0 {
-		return append(i1, items[itemSize].Name), w1 + items[itemSize].Weight, v1
-	}
-	return i0, w0, v0
-}
 
+	item0, weight0, value0 := SolveRecursive(items, itemSize - 1, k)
+	item1, weight1, value1 := SolveRecursive(items, itemSize - 1, k - items[itemSize].Weight)
+
+	value1 += items[itemSize].Value
+
+	if value1 > value0 {
+		return append(item1, items[itemSize].Name), weight1 + items[itemSize].Weight, value1
+	}
+
+	return item0, weight0, value0
+}
 
 
 func KnapsackParallel(items []Item, knapsackSize int) [][]int {
 
 	n := len(items)-1
-	W := knapsackSize
+	k := knapsackSize
 
 	m := make([][]int, n+1)
 
 	for i := 0; i <= n; i++ {
-		m[i] = make([]int, W+1)
-	}
-
-	for i := 0; i <= W; i++ {
-		m[0][i] = 0
+		m[i] = make([]int, k +1)
 	}
 
 	done := make(chan bool)
 
 	go func() {
-
 		for i := 1; i <= n; i++ {
-
-			for j := 0; j <= W; j++ {
-
+			for j := 0; j <= k; j++ {
 				if items[i].Weight > j {
 					m[i][j] = m[i - 1][j]
 				} else if m[i - 1][j] > m[i - 1][j - items[i].Weight] + items[i].Value {
@@ -78,7 +52,6 @@ func KnapsackParallel(items []Item, knapsackSize int) [][]int {
 				} else {
 					m[i][j] = m[i - 1][j - items[i].Weight] + items[i].Value
 				}
-
 			}
 			done <- true
 		}
@@ -92,48 +65,57 @@ func KnapsackParallel(items []Item, knapsackSize int) [][]int {
 }
 
 
-func ShowOptimalSolution(items []Item, m [][]int, knapsackSize int) (int, int, []int) {
 
-	finalValue := 0
-	finalWeight := 0
-	result := []int{}
+func KnapsackDynamic(items []Item, knapsackSize int) [][]int {
 
-	W := knapsackSize
+	n := len(items)-1
+	k := knapsackSize
+
+	m := make([][]int, n+1)
+
+	for i := 0; i <= n; i++ {
+		m[i] = make([]int, k +1)
+	}
+
+	for i := 1; i <= n; i++ {
+		for j := 0; j <= k; j++ {
+			if items[i].Weight > j {
+				m[i][j] = m[i - 1][j]
+			} else if m[i - 1][j] > m[i - 1][j - items[i].Weight] + items[i].Value {
+				m[i][j] = m[i - 1][j]
+			} else {
+				m[i][j] = m[i - 1][j - items[i].Weight] + items[i].Value
+			}
+		}
+	}
+
+	return m
+}
+
+
+func ShowOptimalComposition(items []Item, m [][]int, knapsackSize int) ([]int, int, int) {
+
+	value := 0
+	weight := 0
+	itemNumber := []int{}
+
+	k := knapsackSize
 	n := len(items)-1
 
-	for W > 0 && n > 0 {
-		if m[n][W] != m[n-1][W] {
-			result = append(result, n)
-			W = W - items[n].Weight
-			finalValue += items[n].Value
-			finalWeight += items[n].Weight
+	for k > 0 && n > 0 {
+		if m[n][k] != m[n-1][k] {
+			itemNumber = append(itemNumber, n)
+			k = k - items[n].Weight
+			value += items[n].Value
+			weight += items[n].Weight
 			n--
 		} else {
 			n--
 		}
 	}
-	return finalValue, finalWeight, result
+	return itemNumber, value, weight
 }
 
 
 
 
-//func knapsackRecursive(weights []int, values []int, n int, W int) int {
-func KnapsackRecursive(items []Item, n int, W int) int {
-
-	//n := len(items)-1
-	//W := knapsackSize
-
-	if n == 0 || W == 0 {
-		return 0
-	}
-	without := KnapsackRecursive(items, n - 1, W)
-	if items[n].Weight > W {
-		return without
-	}
-	withim := items[n].Value + KnapsackRecursive(items, n-1, W-items[n].Weight)
-	if withim > without {
-		return withim
-	}
-	return without
-}
