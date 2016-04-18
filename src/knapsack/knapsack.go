@@ -61,6 +61,50 @@ func KnapsackParallel(items []Item, knapsackSize int) [][]int {
 		<- done
 	}
 
+
+
+	// Das funktioniert - aber ziemlich langsam -.-
+	// nur bei einer hohen Anzahl an Werten > 100 ist Parallel ziemlich ähnlich wie Dynamic
+	//for i := 1; i <= n; i++ {
+	//	go func() {
+	//		for j := 0; j <= k; j++ {
+	//			if items[i].Weight > j {
+	//				m[i][j] = m[i - 1][j]
+	//			} else if m[i - 1][j] > m[i - 1][j - items[i].Weight] + items[i].Value {
+	//				m[i][j] = m[i - 1][j]
+	//			} else {
+	//				m[i][j] = m[i - 1][j - items[i].Weight] + items[i].Value
+	//			}
+	//			done <- true
+	//		}
+	//	} ();
+	//
+	//	for x := 0; x <= k; x++ {
+	//		<- done
+	//	}
+	//}
+
+	//for i := 1; i <= n; i++ {
+	//	go func() {
+	//		for j := 0; j <= k; j++ {
+	//			if items[i].Weight > j {
+	//				m[i][j] = m[i - 1][j]
+	//			} else if m[i - 1][j] > m[i - 1][j - items[i].Weight] + items[i].Value {
+	//				m[i][j] = m[i - 1][j]
+	//			} else {
+	//				m[i][j] = m[i - 1][j - items[i].Weight] + items[i].Value
+	//			}
+	//			done <- true
+	//		}
+	//	} ();
+	//
+	//	for x := 0; x <= k; x++ {
+	//		<- done
+	//	}
+	//}
+
+
+
 	return m
 }
 
