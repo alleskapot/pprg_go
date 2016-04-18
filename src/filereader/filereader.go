@@ -7,8 +7,6 @@ import (
 	"strconv"
 )
 
-
-//TODO:  Müssten noch in ein anderes Files ausgelagert werden
 func ReadCapacity(filename string) int {
 
 	var capacity string
@@ -29,7 +27,6 @@ func ReadCapacity(filename string) int {
 
 	return capacityInt
 }
-
 
 func ReadWeightAndProfit(filename string) []int {
 

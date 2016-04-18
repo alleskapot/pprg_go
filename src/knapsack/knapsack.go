@@ -95,25 +95,31 @@ func KnapsackDynamic(items []Item, knapsackSize int) [][]int {
 
 func ShowOptimalComposition(items []Item, m [][]int, knapsackSize int) ([]int, int, int) {
 
+	itemIndex := []int {}
 	value := 0
 	weight := 0
-	itemNumber := []int{}
 
 	k := knapsackSize
-	n := len(items)-1
+	n := len(items) - 1
 
 	for k > 0 && n > 0 {
 		if m[n][k] != m[n-1][k] {
-			itemNumber = append(itemNumber, n)
+			// Add index to array
+			itemIndex = append(itemIndex, n)
+
+			// Reduce the size of knapsack
 			k = k - items[n].Weight
+
+			// Increase value and weight
 			value += items[n].Value
 			weight += items[n].Weight
+
 			n--
 		} else {
 			n--
 		}
 	}
-	return itemNumber, value, weight
+	return itemIndex, value, weight
 }
 
 
