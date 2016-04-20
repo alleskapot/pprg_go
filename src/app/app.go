@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	var dataSet = "p08";
+	var dataSet = "p10";
 
 	fmt.Println("---------------------------------------------------------------------------")
 	fmt.Printf("Wir arbeiten mit Google Go Go - https://www.youtube.com/watch?v=pIgZ7gMze7A \n")
@@ -41,9 +41,9 @@ func main() {
 	fmt.Println("Items: ", items)
 
 
-	SolveItRecursive(items, capacity)
 	SolveItDynamicSequential(items, capacity)
 	SolveItDynamicParallel(items, capacity)
+	SolveItRecursive(items, capacity)
 
 	dat, _ := ioutil.ReadFile(fmt.Sprint("testdata/", dataSet, "_e.txt"));
 	fmt.Printf("Expectation: %s", (string(dat)))
